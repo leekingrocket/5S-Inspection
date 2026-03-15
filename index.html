@@ -137,7 +137,7 @@ html,body{height:100%;background:var(--void);color:var(--t1);font-family:'DM San
 .trial-tx{font-size:12px;color:var(--amber);line-height:1.4;font-family:'JetBrains Mono',monospace}
 .trial-tx strong{font-weight:700}
 
-.bot-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nh);background:rgba(255,255,255,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:2px solid #E5DFD8;display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -2px 12px rgba(26,23,20,.07)}
+.bot-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nh);background:rgba(255,255,255,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:2px solid #E5DFD8;display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -2px 12px rgba(26,23,20,.07)}
 .nv{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;cursor:pointer;border:none;background:transparent;color:var(--t4);transition:all .15s;position:relative}
 .nv::before{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;background:var(--blue);border-radius:0 0 2px 2px;opacity:0;transition:opacity .2s}
 .nv.active::before{opacity:1}
@@ -181,10 +181,10 @@ html,body{height:100%;background:var(--void);color:var(--t1);font-family:'DM San
 .hs-n{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#FFFFFF;line-height:1}
 .hs-l{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-family:'JetBrains Mono',monospace}
 .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
-.qa{background:#FFFFFF;border:1px solid #DDD7D0;border-radius:13px;padding:14px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;box-shadow:0 2px 6px rgba(26,23,20,.08)}
-.qa::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--blues),transparent);opacity:0;transition:opacity .2s}
-.qa:hover{border-color:#B8B0A8;box-shadow:0 4px 12px rgba(26,23,20,.12);transform:translateY(-1px)}
-.qa:hover::after{opacity:1}
+.qa{background:#FFFFFF;border:1px solid #DDD7D0;border-radius:13px;padding:14px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;box-shadow:0 2px 6px rgba(26,23,20,.08);font-family:'DM Sans',sans-serif;text-align:left;box-sizing:border-box;position:relative;overflow:hidden}
+.qa::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--blues),transparent);opacity:0;transition:opacity .2s;pointer-events:none}
+.qa:hover,.qa:active{border-color:#B8B0A8;box-shadow:0 4px 12px rgba(26,23,20,.15);transform:translateY(-2px)}
+.qa:hover::after,.qa:active::after{opacity:1}
 .qa-ic{font-size:23px;flex-shrink:0;position:relative;z-index:1}
 .qa-tx{position:relative;z-index:1}
 .qa-ti{font-size:14px;font-weight:700;color:var(--t1)}
@@ -404,7 +404,7 @@ html,body{height:100%;background:var(--void);color:var(--t1);font-family:'DM San
 .hist-arrow{color:var(--t4);font-size:13px;flex-shrink:0}
 
 /* ════ SCAN REVIEW PANEL ════ */
-#reviewPanel{display:none;position:fixed;inset:0;z-index:400;background:var(--void);overflow-y:auto;animation:scIn .25s ease}
+#reviewPanel{display:none;position:fixed;inset:0;z-index:150;background:var(--void);overflow-y:auto;padding-bottom:var(--nh);animation:scIn .25s ease}
 .rev-hdr{position:sticky;top:0;z-index:10;background:rgba(26,23,20,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--b1);padding:12px 16px;display:flex;align-items:center;gap:10px}
 .rev-back{width:36px;height:36px;border-radius:9px;background:var(--surf);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;transition:all .15s}
 .rev-back:hover{border-color:var(--blue);color:var(--blueb)}
@@ -636,6 +636,38 @@ html,body{height:100%;background:var(--void);color:var(--t1);font-family:'DM San
         <input type="email" id="lgEmail" placeholder="you@company.com" autocomplete="email"
                onkeydown="if(event.key==='Enter')document.getElementById('lgPass').focus()">
       </div>
+      <!-- Magic link option -->
+      <div id="magicLinkSection" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="flex:1;height:1px;background:var(--b1)"></div>
+          <div style="font-size:11px;color:var(--t4);white-space:nowrap">or sign in without a password</div>
+          <div style="flex:1;height:1px;background:var(--b1)"></div>
+        </div>
+        <button id="magicLinkBtn" onclick="requestMagicLink()" class="btn btn-gh" style="width:100%;justify-content:center;gap:8px">
+          ✉ Send me a sign-in link
+        </button>
+        <div id="magicLinkSent" style="display:none;text-align:center;padding:10px 0;font-size:13px;color:var(--green)">
+          ✓ Sign-in link sent — check your email inbox.
+        </div>
+      </div>
+      <!-- OAuth buttons — shown dynamically when providers are configured -->
+      <div id="oauthSection" style="display:none;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="flex:1;height:1px;background:var(--b1)"></div>
+          <div style="font-size:11px;color:var(--t4);white-space:nowrap">or sign in with</div>
+          <div style="flex:1;height:1px;background:var(--b1)"></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="googleLoginBtn" onclick="loginWithGoogle()" style="display:none;flex:1;padding:10px;border:1px solid var(--b1);border-radius:8px;background:var(--surf);cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;display:none;align-items:center;justify-content:center;gap:6px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Google
+          </button>
+          <button id="microsoftLoginBtn" onclick="loginWithMicrosoft()" style="display:none;flex:1;padding:10px;border:1px solid var(--b1);border-radius:8px;background:var(--surf);cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;align-items:center;justify-content:center;gap:6px">
+            <svg width="16" height="16" viewBox="0 0 21 21" fill="none"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>
+            Microsoft
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- USER REGISTRY MODE (when CFG.USERS is populated) -->
@@ -746,23 +778,23 @@ html,body{height:100%;background:var(--void);color:var(--t1);font-family:'DM San
           <button class="btn btn-pr btn-sm" id="pwaInstallBtn" onclick="installPWA()">Install</button>
         </div>
         <div class="qa-grid">
-          <div class="qa" role="button" tabindex="0" onclick="goScreen('scan')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('scan');}"><div class="qa-ic">📷</div><div class="qa-tx"><div class="qa-ti">New Scan</div><div class="qa-sb">Inspect area</div></div></div>
-          <div class="qa" role="button" tabindex="0" onclick="goScreen('tasks')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('tasks');}"><div class="qa-ic">✅</div><div class="qa-tx"><div class="qa-ti">Tasks</div><div class="qa-sb" id="qaTs">— pending</div></div></div>
-          <div class="qa" id="qaDash" role="button" tabindex="0" onclick="goScreen('dashboard')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('dashboard');}"><div class="qa-ic">📊</div><div class="qa-tx"><div class="qa-ti">Dashboard</div><div class="qa-sb">Team overview</div></div></div>
-          <div class="qa" role="button" tabindex="0" onclick="goScreen('history')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('history');}"><div class="qa-ic">🕐</div><div class="qa-tx"><div class="qa-ti">History</div><div class="qa-sb">Past scans &amp; audits</div></div></div>
+          <button class="qa" onclick="goScreen('scan')"><div class="qa-ic">📷</div><div class="qa-tx"><div class="qa-ti">New Scan</div><div class="qa-sb">Inspect area</div></div></button>
+          <button class="qa" onclick="goScreen('tasks')"><div class="qa-ic">✅</div><div class="qa-tx"><div class="qa-ti">Tasks</div><div class="qa-sb" id="qaTs">— pending</div></div></button>
+          <button class="qa" id="qaDash" onclick="goScreen('dashboard')"><div class="qa-ic">📊</div><div class="qa-tx"><div class="qa-ti">Dashboard</div><div class="qa-sb">Team overview</div></div></button>
+          <button class="qa" onclick="goScreen('history')"><div class="qa-ic">🕐</div><div class="qa-tx"><div class="qa-ti">History</div><div class="qa-sb">Past scans &amp; audits</div></div></button>
         </div>
         <div class="dvdr"><span class="dvdr-lb">Recent Activity</span><div class="dvdr-ln"></div></div>
         <div class="card" id="homeRec"></div>
 
         <div style="margin-top:4px">
-          <div class="qa" role="button" tabindex="0" onclick="goScreen('help')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('help');}" style="border-color:var(--b2)">
+          <button class="qa" onclick="goScreen('help')" style="border-color:var(--b2);width:100%">
             <div class="qa-ic">🛟</div>
             <div class="qa-tx">
               <div class="qa-ti">Help &amp; Training</div>
               <div class="qa-sb" id="homeHelpSub">Support · 5S Guide</div>
             </div>
             <div style="font-size:13px;color:var(--t4);flex-shrink:0">→</div>
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -1191,6 +1223,18 @@ html,body{height:100%;background:var(--void);color:var(--t1);font-family:'DM San
               </select>
             </div>
           </div>
+          <!-- Zone selector — shown in backend mode to enable custom templates -->
+          <div class="fl" id="clZoneWrap" style="display:none;margin-bottom:14px">
+            <label class="fl-label">Zone <span style="font-size:10px;color:var(--t4);font-weight:400">(optional — loads zone-specific checklist)</span></label>
+            <select class="trace-input" id="clZone" aria-label="Select zone for audit" onchange="onClZoneChange()">
+              <option value="">No specific zone — use standard questions</option>
+            </select>
+          </div>
+          <!-- Template indicator — shows when a custom template is loaded -->
+          <div id="clTemplateBadge" style="display:none;margin-bottom:10px;padding:8px 12px;background:var(--blues);border-radius:8px;font-size:12px;color:var(--blueb);font-weight:600">
+            📋 <span id="clTemplateName">Custom template loaded</span>
+            <button onclick="clearClTemplate()" style="background:none;border:none;color:var(--blueb);cursor:pointer;font-size:11px;margin-left:8px;font-family:inherit">× Use standard questions</button>
+          </div>
           <div class="fl" style="margin-bottom:14px">
             <label class="fl-label">Reviewer Name</label>
             <input class="trace-input" type="text" id="clReviewer" aria-label="Reviewer full name" placeholder="Your full name">
@@ -1366,6 +1410,7 @@ html,body{height:100%;background:var(--void);color:var(--t1);font-family:'DM San
   </div>
 
   <!-- Annotated image (or no-image banner) -->
+  <div id="revBeforeSection"></div>
   <div id="revImgSection"></div>
 
   <div class="rev-body">
@@ -1624,7 +1669,22 @@ async function apiCall(path, opts = {}) {
   };
 
   if (retry) return withRetry(doFetch, { label: retryLabel });
-  return doFetch();
+
+  try {
+    return await doFetch();
+  } catch (e) {
+    // If offline and this is a mutation, queue for later replay
+    const isMutation = fetchOpts.method && fetchOpts.method !== 'GET';
+    const isOffline  = !navigator.onLine || (e instanceof TypeError && e.message.includes('fetch'));
+    if (isMutation && isOffline && CFG.API_URL) {
+      // Queue the mutation — caller will get a synthetic "queued" response
+      const qItem = queueMutation(fetchOpts.method, path, fetchOpts.body);
+      showToast('Offline — change queued and will sync automatically');
+      // Return a synthetic response so the optimistic UI update still works
+      return { _queued: true, idempotencyKey: qItem.idempotencyKey };
+    }
+    throw e;
+  }
 }
 
 // ── Backend login — Step 1 (email + password) ────────────────────
@@ -1753,6 +1813,7 @@ function mapApiScan(s) {
     reviewer:     s.reviewer    || null,
     savedBy:      s.saved_by    || '—',
     lodgedBy:     s.saved_by    || '—',
+    zone_id:      s.zone_id     || null,  // needed for before/after photo comparison
   };
 }
 
@@ -2207,6 +2268,13 @@ function updateScanUI(){
 // ── NAVIGATION ──
 function goScreen(n){
   if(n==='dashboard'&&!isManager()){showToast('Dashboard is manager access only');return}
+  // Close review panel if open — nav tabs should always navigate away cleanly
+  const rp = document.getElementById('reviewPanel');
+  if(rp && rp.style.display === 'block'){
+    rp.style.display = 'none';
+    reviewingId = null;
+    releaseFocus();
+  }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nv').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+n).classList.add('active');
@@ -2217,6 +2285,7 @@ function goScreen(n){
   if(n==='history')  renderHist();
   if(n==='home')     renderHome();
   if(n==='help')     renderHelpScreen();
+  if(n==='checklist')initChecklistScreen();
 }
 
 // ── HOME ──
@@ -2240,7 +2309,17 @@ function renderHome(){
   rec.innerHTML=recent.map(h=>{
     const avg=Math.round(Object.values(h.scores).reduce((a,b)=>a+b,0)/5);
     const col=avg>70?'var(--green)':avg>50?'var(--amber)':'var(--red)';
-    return`<div class="rec-item"><div class="rec-thumb">${escapeHtml(h.thumb)}</div><div class="rec-inf"><div class="rec-ti">${escapeHtml(h.area)}</div><div class="rec-me">${escapeHtml(h.date)} · ${Number(h.findings)||0} findings</div></div><div class="rec-sc" style="color:${col}">${avg}</div></div>`;
+    return`<div class="rec-item" role="button" tabindex="0"
+      onclick="goScreen('history');openReview('${h.id}')"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('history');openReview('${h.id}');}"
+      aria-label="Review ${escapeHtml(h.area)}, score ${avg}">
+      <div class="rec-thumb">${escapeHtml(h.thumb)}</div>
+      <div class="rec-inf">
+        <div class="rec-ti">${escapeHtml(h.area)}</div>
+        <div class="rec-me">${escapeHtml(h.date)} · ${Number(h.findings)||0} findings</div>
+      </div>
+      <div class="rec-sc" style="color:${col}">${avg} →</div>
+    </div>`;
   }).join('');
 }
 
@@ -3677,7 +3756,7 @@ function renderHist(append=false){
     const subLine=isCL
       ? `Reviewed by ${h.reviewer||'—'} · ${h.findings||0} findings`
       : `${h.findings} finding${h.findings!==1?'s':''}`;
-    return`<div class="hist-row" role="button" tabindex="0" onclick="openReview(${h.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openReview(${h.id});}" aria-label="Review ${escapeHtml(h.area)}">
+    return`<div class="hist-row" role="button" tabindex="0" onclick="openReview('${h.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openReview('${h.id}');}" aria-label="Review ${escapeHtml(h.area)}">
       <div class="hist-ic">${thumbHtml}</div>
       <div class="hist-in">
         <div class="hist-ti">${h.area}</div>
@@ -3712,7 +3791,7 @@ function renderHist(append=false){
 let reviewingId=null;
 
 function openReview(id){
-  const h=hist.find(x=>x.id===id);if(!h)return;
+  const h=hist.find(x=>String(x.id)===String(id));if(!h)return;
   reviewingId=id;
 
   // Hide delete for shop floor
@@ -3780,6 +3859,42 @@ function openReview(id){
         <div class="no-img-ic">📷</div>
         <div class="no-img-tx">No image stored for this scan.<br>Images are saved automatically from your next scan onwards.</div>
       </div>`;
+  }
+
+  // ── FEATURE 1.1: Load zone reference photo for before/after comparison ────
+  const beforeSection = document.getElementById('revBeforeSection');
+  if (beforeSection) {
+    beforeSection.innerHTML = '';
+    const zoneId = h.zone_id || null;
+    if (CFG.API_URL && zoneId && h.type !== 'checklist') {
+      apiCall(`/api/zones/${zoneId}/photos`, { retry: true })
+        .then(r => {
+          const photos = (r.photos || []).filter(p => p.is_active);
+          if (!photos.length) { beforeSection.innerHTML = ''; return; }
+          const ref = photos[0];
+          const afterSrc = h.img ? 'data:image/jpeg;base64,' + h.img : h.imageUrl;
+          beforeSection.innerHTML = `
+            <div style="padding:12px 15px;border-bottom:1px solid var(--b1)">
+              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t4);margin-bottom:10px;font-family:'JetBrains Mono',monospace">📷 Before / After Comparison</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:var(--t3);margin-bottom:5px;text-align:center">BEFORE</div>
+                  <img src="${ref.image_url}" alt="Reference photo" onclick="openLightbox('${ref.image_url}')"
+                    style="width:100%;border-radius:8px;cursor:pointer;object-fit:cover;aspect-ratio:4/3"
+                    onerror="this.parentElement.innerHTML='<div style=\'text-align:center;padding:20px;color:var(--t4);font-size:12px\'>No reference photo</div>'">
+                  <div style="font-size:11px;color:var(--t4);text-align:center;margin-top:4px">${ref.label || 'Reference'}</div>
+                </div>
+                ${afterSrc ? `<div>
+                  <div style="font-size:11px;font-weight:700;color:var(--t3);margin-bottom:5px;text-align:center">AFTER</div>
+                  <img src="${afterSrc}" alt="Scan photo" onclick="openLightbox('${afterSrc}')"
+                    style="width:100%;border-radius:8px;cursor:pointer;object-fit:cover;aspect-ratio:4/3">
+                  <div style="font-size:11px;color:var(--t4);text-align:center;margin-top:4px">${h.date}</div>
+                </div>` : '<div style="display:flex;align-items:center;justify-content:center;color:var(--t4);font-size:12px">No scan photo</div>'}
+              </div>
+            </div>`;
+        })
+        .catch(() => { if (beforeSection) beforeSection.innerHTML = ''; });
+    }
   }
 
   // Scores
@@ -3857,6 +3972,12 @@ function openReview(id){
         ? `Scan image stored in cloud · Saved by ${h.savedBy||'—'}`
         : `No image stored for this scan.`;
 
+  // Hide all screens — prevents the history list showing through on iOS Safari
+  // where position:fixed is broken when body has overflow-x:hidden.
+  // Same pattern goScreen uses for every screen transition.
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nv').forEach(b => b.classList.remove('active'));
+
   // Show panel
   document.getElementById('reviewPanel').style.display='block';
   document.getElementById('reviewPanel').scrollTop=0;
@@ -3867,6 +3988,10 @@ function closeReview(){
   document.getElementById('reviewPanel').style.display='none';
   reviewingId=null;
   releaseFocus();
+  // Restore the history screen — review is always opened from history
+  document.getElementById('screen-history').classList.add('active');
+  const nb = document.getElementById('nav-history');
+  if (nb) nb.classList.add('active');
 }
 
 function deleteReviewScan(){
@@ -3888,12 +4013,12 @@ function closeDeleteConfirm(){
 
 async function confirmDelete(){
   closeDeleteConfirm();
-  const h=hist.find(x=>x.id===reviewingId);
+  const h=hist.find(x=>String(x.id)===String(reviewingId));
   const idToDelete=reviewingId;
   logAction('SCAN_DELETED','Record deleted',h?h.area:'—');
 
   // Optimistic local removal
-  hist=hist.filter(x=>x.id!==idToDelete);
+  hist=hist.filter(x=>String(x.id)!==String(idToDelete));
   saveHist();
   closeReview();
   renderHist();
@@ -3979,6 +4104,107 @@ function drawRevBoxes(findings){
 // 5S AUDIT CHECKLIST
 // ════════════════════════════════════════════════════════════════
 
+// ── FEATURE 1.2: Audit template engine ───────────────────────────────────
+// Manages zone-specific custom checklist templates.
+// When no custom template is active, falls back to CL_QUESTIONS.
+
+let _activeTemplate  = null;  // { id, name, questions: [{pillar, text}] } or null
+let _clZones         = [];    // zones available for checklist selection
+
+// Called when navigating to the checklist screen — loads zones for the selector
+async function initChecklistScreen() {
+  const zoneWrap = document.getElementById('clZoneWrap');
+  const zoneEl   = document.getElementById('clZone');
+  if (!CFG.API_URL || !zoneWrap || !zoneEl) return;
+
+  // Show zone selector in backend mode
+  zoneWrap.style.display = 'block';
+
+  if (!_clZones.length) {
+    try {
+      const r = await apiCall('/api/zones', { retry: true });
+      _clZones = (r.zones || []).filter(z => z.is_active);
+      zoneEl.innerHTML = '<option value="">No specific zone — use standard questions</option>';
+      _clZones.forEach(z => {
+        const opt = document.createElement('option');
+        opt.value = z.id;
+        opt.textContent = `${z.sites?.name ? z.sites.name + ' · ' : ''}${z.name}`;
+        zoneEl.appendChild(opt);
+      });
+    } catch (e) { console.warn('[5S] Could not load zones for checklist:', e.message); }
+  }
+}
+
+// Called when zone selector changes — loads or clears the template
+async function onClZoneChange() {
+  const zoneId = document.getElementById('clZone')?.value;
+  if (!zoneId) { clearClTemplate(); return; }
+  if (!CFG.API_URL) return;
+  try {
+    const r = await apiCall(`/api/audit-templates/for-zone/${zoneId}`, { retry: true });
+    if (r.template) {
+      _activeTemplate = r.template;
+      document.getElementById('clTemplateBadge').style.display = 'flex';
+      document.getElementById('clTemplateName').textContent =
+        `Using: "${r.template.name}" (${r.template.questions.length} questions)`;
+      // Reset answers for the new question set
+      resetChecklistAnswers(_activeTemplate.questions);
+    } else {
+      clearClTemplate();
+      showToast('No custom template for this zone — using standard 5S questions');
+    }
+    renderChecklist();
+  } catch (e) {
+    console.warn('[5S] Could not load audit template:', e.message);
+    clearClTemplate();
+  }
+}
+
+function clearClTemplate() {
+  _activeTemplate = null;
+  const badge = document.getElementById('clTemplateBadge');
+  if (badge) badge.style.display = 'none';
+  resetChecklistAnswers(null);
+  renderChecklist();
+}
+
+function resetChecklistAnswers(questions) {
+  if (!questions) {
+    // Reset to standard 5 pillars × 5 questions
+    clAnswers = {'1S':[null,null,null,null,null],'2S':[null,null,null,null,null],
+                 '3S':[null,null,null,null,null],'4S':[null,null,null,null,null],
+                 '5S':[null,null,null,null,null]};
+  } else {
+    // Build answers object from custom question list
+    clAnswers = {};
+    questions.forEach(q => {
+      if (!clAnswers[q.pillar]) clAnswers[q.pillar] = [];
+      clAnswers[q.pillar].push(null);
+    });
+    // Ensure all 5 pillars exist (fill with empty arrays if not in template)
+    ['1S','2S','3S','4S','5S'].forEach(p => { if (!clAnswers[p]) clAnswers[p] = []; });
+  }
+}
+
+// Returns the active question set (custom or built-in)
+function getActiveQuestions() {
+  if (_activeTemplate?.questions?.length) {
+    // Group custom questions by pillar
+    const grouped = {};
+    _activeTemplate.questions.forEach(q => {
+      if (!grouped[q.pillar]) grouped[q.pillar] = [];
+      grouped[q.pillar].push(q.text);
+    });
+    // Merge with standard pillars (pillar order is fixed)
+    const result = {};
+    ['1S','2S','3S','4S','5S'].forEach(p => {
+      if (grouped[p]?.length) result[p] = grouped[p];
+    });
+    return result;
+  }
+  return CL_QUESTIONS;
+}
+
 const CL_QUESTIONS = {
   '1S': [
     'All items in the work area are necessary for current operations.',
@@ -4023,7 +4249,8 @@ let clAnswers = {'1S':[null,null,null,null,null],'2S':[null,null,null,null,null]
 function renderChecklist(){
   const qs = document.getElementById('clQuestions');
   if(!qs) return;
-  const html = Object.entries(CL_QUESTIONS).map(([pillar, questions])=>{
+  const ACTIVE_Q = getActiveQuestions();
+  const html = Object.entries(ACTIVE_Q).map(([pillar, questions])=>{
     const pi = P[pillar];
     const answers = clAnswers[pillar];
     const scored = answers.filter(a=>a!==null);
@@ -4054,7 +4281,7 @@ function clScore(pillar, qIdx, score){
   clAnswers[pillar][qIdx] = score;
   // Update just this button row without full re-render for responsiveness
   const allSame = document.querySelectorAll(`#clQuestions .cl-pillar-block`);
-  const pillarKeys = Object.keys(CL_QUESTIONS);
+  const pillarKeys = Object.keys(getActiveQuestions());
   const pIdx = pillarKeys.indexOf(pillar);
   if(pIdx<0||!allSame[pIdx]) return renderChecklist();
   const rows = allSame[pIdx].querySelectorAll('.cl-q');
@@ -4076,7 +4303,11 @@ function clScore(pillar, qIdx, score){
 }
 
 function updateClTotal(){
-  const allAnswered = Object.values(clAnswers).every(a=>a.every(v=>v!==null));
+  // Validate against active question set (may be custom template)
+  const activeQ = getActiveQuestions();
+  const allAnswered = Object.entries(activeQ).every(([p, qs]) =>
+    qs.length === 0 || (clAnswers[p] || []).slice(0, qs.length).every(v => v !== null)
+  );
   const totalScore = allAnswered
     ? Math.round(Object.values(clAnswers).reduce((sum,a)=>sum+(a.reduce((s,v)=>s+v,0)/20)*100*0.2,0))
     : null;
@@ -4107,6 +4338,8 @@ function resetChecklist(){
   clAnswers={'1S':[null,null,null,null,null],'2S':[null,null,null,null,null],'3S':[null,null,null,null,null],'4S':[null,null,null,null,null],'5S':[null,null,null,null,null]};
   document.getElementById('clDept').value='';
   document.getElementById('clReviewer').value='';
+  if(document.getElementById('clZone')) document.getElementById('clZone').value='';
+  clearClTemplate();
   renderChecklist();
 }
 
@@ -4119,12 +4352,24 @@ async function submitChecklist(){
   if(!allAnswered){showToast('Please answer all 25 questions before submitting');return}
 
   const pillarScores={};
-  Object.entries(clAnswers).forEach(([p,a])=>{pillarScores[p]=Math.round((a.reduce((s,v)=>s+v,0)/20)*100)});
-  const totalScore=Math.round(Object.values(pillarScores).reduce((s,v)=>s+v,0)/5);
+  // Divide by actual question count × 4 (not hardcoded 20) so custom templates
+  // with fewer than 5 questions per pillar still score correctly out of 100.
+  Object.entries(clAnswers).forEach(([p,a])=>{
+    if(!a.length){ pillarScores[p]=null; return; } // skip empty pillars
+    const maxScore = a.length * 4;
+    pillarScores[p]=Math.round((a.reduce((s,v)=>s+v,0)/maxScore)*100);
+  });
+  // Total score: average only over pillars that actually have questions
+  const scoredPillars = Object.values(pillarScores).filter(v=>v!==null);
+  const totalScore = scoredPillars.length
+    ? Math.round(scoredPillars.reduce((s,v)=>s+v,0)/scoredPillars.length)
+    : 0;
   const nowDate=new Date().toLocaleDateString(LOCALE,{day:'numeric',month:'short',year:'numeric'});
   const nowTime=new Date().toLocaleTimeString(LOCALE,{hour:'2-digit',minute:'2-digit'});
   const monthKey=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
 
+  // Normalise: null pillar (no questions in template) → 0 for storage/display
+  const ps = k => pillarScores[k] ?? 0;
   const entry={
     id:Date.now(),
     type:'checklist',
@@ -4133,7 +4378,7 @@ async function submitChecklist(){
     reviewer,
     date:`${nowDate} · ${nowTime}`,
     month:monthKey,
-    scores:{s1:pillarScores['1S'],s2:pillarScores['2S'],s3:pillarScores['3S'],s4:pillarScores['4S'],s5:pillarScores['5S']},
+    scores:{s1:ps('1S'),s2:ps('2S'),s3:ps('3S'),s4:ps('4S'),s5:ps('5S')},
     findings:0,
     thumb:'📋',
     savedBy:user?.name||reviewer,
@@ -4145,9 +4390,12 @@ async function submitChecklist(){
   if(CFG.API_URL){
     // ── Backend mode: POST checklist to /api/scans ────────────────
     try{
+      const clZoneId = document.getElementById('clZone')?.value || null;
       const r=await apiCall('/api/scans',{method:'POST',body:{
-        area:`${dept} — 5S Audit`, dept, location:dept,
-        scores:{s1:pillarScores['1S'],s2:pillarScores['2S'],s3:pillarScores['3S'],s4:pillarScores['4S'],s5:pillarScores['5S']},
+        area:`${dept}${clZoneId && _clZones.find(z=>z.id===clZoneId) ? ' — ' + _clZones.find(z=>z.id===clZoneId).name : ''} — 5S Audit`,
+        dept, location:dept, zone_id:clZoneId || undefined,
+        template_id: _activeTemplate?.id || undefined,
+        scores:{s1:ps('1S'),s2:ps('2S'),s3:ps('3S'),s4:ps('4S'),s5:ps('5S')},
         findingsData:[], findingsCount:0,
         type:'checklist',
         checklistAnswers:clAnswers,
@@ -4291,13 +4539,67 @@ function installPWA(){
 }
 
 // Inline service worker for offline caching
-if('serviceWorker' in navigator&&window.isSecureContext){
-  const sw=`const C='5s-v1';const A=[location.pathname];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A)));self.skipWaiting();});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const cl=res.clone();caches.open(C).then(c=>c.put(e.request,cl));return res;})));});`;
-  const url=URL.createObjectURL(new Blob([sw],{type:'application/javascript'}));
-  navigator.serviceWorker.register(url).catch(e => console.warn('[5S] Service Worker registration failed:', e.message));
+// ── FEATURE 1.4: Offline-capable Service Worker ────────────────────────
+// Strategy: Network-first for API calls (fresh data when online),
+// Cache-first for app shell (fast load, works offline).
+if('serviceWorker' in navigator && window.isSecureContext){
+  const swCode = `
+const CACHE    = '5s-v2';
+const SHELL    = [location.pathname, '/5s-tokens.css'];
+const API_HOST = self.location.origin;
+
+// Install: pre-cache the app shell
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.filter(Boolean))));
+  self.skipWaiting();
+});
+
+// Activate: delete old caches
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+
+// Fetch: network-first for API, cache-first for shell
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+  // Skip non-GET and cross-origin (except our own API)
+  if (e.request.method !== 'GET') return;
+
+  // API calls: network-first, no caching (data must be fresh)
+  if (url.pathname.startsWith('/api/')) {
+    e.respondWith(fetch(e.request).catch(() =>
+      new Response(JSON.stringify({ error: 'You are offline. Changes will sync when reconnected.' }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } })
+    ));
+    return;
+  }
+
+  // App shell: cache-first with network fallback and update
+  e.respondWith(
+    caches.open(CACHE).then(cache =>
+      cache.match(e.request).then(cached => {
+        const networkFetch = fetch(e.request).then(res => {
+          if (res.ok) cache.put(e.request, res.clone());
+          return res;
+        }).catch(() => cached); // Return cached if network fails
+        return cached || networkFetch;
+      })
+    )
+  );
+});
+
+// Message: force cache refresh
+self.addEventListener('message', e => {
+  if (e.data === 'skipWaiting') self.skipWaiting();
+});`;
+
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl  = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl)
+    .catch(e => console.warn('[5S] Service Worker registration failed:', e.message));
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -4311,6 +4613,209 @@ function escapeHtml(s){
 function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ════════════════════════════════════════════════════════════════
+// FEATURE 1.4 — OFFLINE SYNC QUEUE
+// ════════════════════════════════════════════════════════════════
+// When an API mutation fails due to being offline, it is queued in
+// localStorage and replayed automatically when the connection returns.
+// The offline banner shows how many changes are waiting to sync.
+
+let _syncQueue  = JSON.parse(localStorage.getItem('syos_syncq') || '[]');
+let _isSyncing  = false;
+let _isOnline   = navigator.onLine;
+
+function _saveSyncQueue() {
+  // Keep at most 200 queued items to avoid localStorage overflow
+  if (_syncQueue.length > 200) _syncQueue = _syncQueue.slice(-200);
+  try { localStorage.setItem('syos_syncq', JSON.stringify(_syncQueue)); } catch {}
+}
+
+// Queue a mutation for later replay when offline
+function queueMutation(method, path, body) {
+  const item = {
+    id:               Date.now() + '-' + Math.random().toString(36).slice(2),
+    idempotencyKey:   crypto.randomUUID ? crypto.randomUUID() : (Date.now() + Math.random()).toString(36),
+    method, path, body,
+    queuedAt:         new Date().toISOString(),
+  };
+  _syncQueue.push(item);
+  _saveSyncQueue();
+  _updateOfflineBanner();
+  return item;
+}
+
+// Attempt to replay the sync queue against the backend
+async function replaySync() {
+  if (!CFG.API_URL || _isSyncing || _syncQueue.length === 0) return;
+  _isSyncing = true;
+  const btn = document.getElementById('syncRetryBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Syncing…'; }
+
+  const batch = _syncQueue.slice(0, 50);
+  try {
+    const res = await apiCall('/api/sync', { method: 'POST', body: { items: batch } });
+    const processed = new Set((res.results || [])
+      .filter(r => r.status === 'ok' || r.status === 'skipped')
+      .map(r => r.idempotencyKey));
+
+    // Remove successfully processed items from queue
+    _syncQueue = _syncQueue.filter(item => !processed.has(item.idempotencyKey));
+    _saveSyncQueue();
+    if (res.processed > 0) {
+      showToast(`✓ ${res.processed} offline change${res.processed !== 1 ? 's' : ''} synced`);
+      // Refresh local data to reflect server state
+      if (CFG.API_URL) await loadDataFromBackend();
+      renderHome(); renderBadge();
+      if (taskFilter) renderTasks(taskFilter);
+    }
+  } catch (e) {
+    console.warn('[5S Sync] Queue replay failed:', e.message);
+  } finally {
+    _isSyncing = false;
+    if (btn) { btn.disabled = false; btn.textContent = '↻ Sync'; }
+    _updateOfflineBanner();
+  }
+}
+
+// Show/hide the offline indicator banner
+function _updateOfflineBanner() {
+  let banner = document.getElementById('offlineBanner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'offlineBanner';
+    banner.setAttribute('role', 'status');
+    banner.setAttribute('aria-live', 'polite');
+    banner.style.cssText = [
+      'position:fixed;bottom:68px;left:0;right:0;z-index:800',
+      'background:var(--amber);color:#fff',
+      'padding:8px 16px;display:none',
+      'align-items:center;gap:10px;font-size:13px;font-weight:600',
+    ].join(';');
+    banner.innerHTML = `<span style="flex:1" id="offlineBannerTx">Offline</span>
+      <button id="syncRetryBtn" onclick="replaySync()" style="background:rgba(255,255,255,.25);border:none;color:#fff;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">↻ Sync</button>`;
+    document.body.appendChild(banner);
+  }
+  const show = !_isOnline || _syncQueue.length > 0;
+  banner.style.display = show ? 'flex' : 'none';
+  const tx = document.getElementById('offlineBannerTx');
+  if (tx) {
+    if (!_isOnline && _syncQueue.length > 0)
+      tx.textContent = `Offline · ${_syncQueue.length} change${_syncQueue.length !== 1 ? 's' : ''} queued`;
+    else if (!_isOnline)
+      tx.textContent = 'Offline — changes will sync when reconnected';
+    else if (_syncQueue.length > 0)
+      tx.textContent = `${_syncQueue.length} change${_syncQueue.length !== 1 ? 's' : ''} waiting to sync`;
+  }
+}
+
+// Listen for online/offline events
+window.addEventListener('offline', () => { _isOnline = false; _updateOfflineBanner(); });
+window.addEventListener('online',  () => {
+  _isOnline = true;
+  _updateOfflineBanner();
+  // Auto-replay queue when connection returns
+  if (_syncQueue.length > 0 && CFG.API_URL) setTimeout(replaySync, 1500);
+});
+
+// ════════════════════════════════════════════════════════════════
+// P0 AUTH — MAGIC LINK + OAUTH
+// ════════════════════════════════════════════════════════════════
+
+// ── Magic link: user clicks "Send me a sign-in link" ─────────────────────
+async function requestMagicLink() {
+  if (!CFG.API_URL) return;
+  const email = document.getElementById('lgEmail')?.value?.trim();
+  if (!email) { showErr('Please enter your email address first.'); return; }
+
+  const btn = document.getElementById('magicLinkBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  try {
+    await fetch(CFG.API_URL + '/api/auth/magic-link/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    // Always show success — API never reveals whether email exists
+    const sent = document.getElementById('magicLinkSent');
+    if (sent) sent.style.display = 'block';
+    if (btn)  btn.style.display  = 'none';
+    // Hide the password field — user has chosen magic link path
+    const pwField = document.getElementById('pwField');
+    if (pwField) pwField.style.display = 'none';
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = '✉ Send me a sign-in link'; }
+    showErr('Could not send link — check your connection.');
+  }
+}
+
+// ── Magic link: verify token from URL (?magic_token=xxx) ─────────────────
+async function verifyMagicToken(token) {
+  if (!CFG.API_URL) return;
+  const btn = document.getElementById('loginBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Verifying link…'; }
+
+  try {
+    const r = await fetch(CFG.API_URL + '/api/auth/magic-link/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Link verification failed.');
+    // Clean the token from the URL so it can't be reused by sharing the link
+    window.history.replaceState({}, '', window.location.pathname);
+    onLoginSuccess(data.token, data.user);
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Access System →'; }
+    showErr(e.message);
+  }
+}
+
+// ── OAuth: redirect to backend OAuth flow ────────────────────────────────
+function loginWithGoogle() {
+  if (!CFG.API_URL) return;
+  window.location.href = CFG.API_URL + '/api/auth/oauth/google?app=inspector';
+}
+function loginWithMicrosoft() {
+  if (!CFG.API_URL) return;
+  window.location.href = CFG.API_URL + '/api/auth/oauth/microsoft?app=inspector';
+}
+
+// ── OAuth: extract token from URL hash (#oauth_token=xxx) ────────────────
+function extractOAuthToken() {
+  const hash = window.location.hash;
+  if (!hash.includes('oauth_token=')) return null;
+  const token = hash.split('oauth_token=')[1]?.split('&')[0];
+  // Clean hash immediately — tokens in URLs are a security concern
+  window.history.replaceState({}, '', window.location.pathname);
+  return token || null;
+}
+
+// ── OAuth error from redirect ─────────────────────────────────────────────
+function extractOAuthError() {
+  const params = new URLSearchParams(window.location.search);
+  const err = params.get('oauth_error');
+  if (err) window.history.replaceState({}, '', window.location.pathname);
+  return err || null;
+}
+
+// ── Check which OAuth providers the server has configured ────────────────
+async function loadOAuthProviders() {
+  if (!CFG.API_URL) return;
+  try {
+    const r = await fetch(CFG.API_URL + '/api/auth/oauth/providers');
+    if (!r.ok) return;
+    const { google, microsoft } = await r.json();
+    const section  = document.getElementById('oauthSection');
+    const googleBtn = document.getElementById('googleLoginBtn');
+    const msBtn     = document.getElementById('microsoftLoginBtn');
+    if (google)    { if (googleBtn)  { googleBtn.style.display  = 'flex'; } }
+    if (microsoft) { if (msBtn)      { msBtn.style.display      = 'flex'; } }
+    if ((google || microsoft) && section) section.style.display = 'block';
+  } catch { /* OAuth providers check is non-fatal */ }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -4451,6 +4956,34 @@ document.addEventListener('keydown', e => {
 // ── INIT ──
 initLoginUI();
 renderBadge();
+// Show offline banner on load if there are queued items from a previous session
+_updateOfflineBanner();
+
+// ── Handle OAuth redirect (token in hash) and magic link (token in query) ──
+if (CFG.API_URL) {
+  // 1. OAuth token in URL hash — user returning from Google/Microsoft callback
+  const oauthTok = extractOAuthToken();
+  if (oauthTok) {
+    // Decode JWT payload — add base64 padding before atob() to handle all segment lengths
+    const _seg = oauthTok.split('.')[1];
+    const _pad = _seg.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - _seg.length % 4) % 4);
+    onLoginSuccess(oauthTok, JSON.parse(atob(_pad)));
+  }
+
+  // 2. Magic link token in query string — user clicked emailed link
+  const urlParams = new URLSearchParams(window.location.search);
+  const magicTok  = urlParams.get('magic_token');
+  if (magicTok && !oauthTok) {
+    verifyMagicToken(magicTok);
+  }
+
+  // 3. OAuth error — show it on the login form
+  const oauthErr = extractOAuthError();
+  if (oauthErr) showErr(oauthErr);
+
+  // 4. Load which OAuth providers are configured
+  loadOAuthProviders();
+}
 
 // IT Setup panel is no longer accessible via URL parameter.
 // Configuration is managed via the Admin Dashboard (admin-dashboard.html).
